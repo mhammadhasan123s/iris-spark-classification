@@ -41,7 +41,21 @@ The workflow was executed in **Jupyter Notebook** and reproduced in **PuTTY/HDFS
 ##  Running in PuTTY / HDFS
 To reproduce results in the Hadoop sandbox:
 
-1. Upload the script `iris_model.py` to `/home/maria_dev/IRIS/`.  
+1. Upload the script `P166175_DM_IRIS.py` to `/home/maria_dev/IRIS/`.  
 2. Verify the file:
    ```bash
    ls /home/maria_dev/IRIS/
+   ```
+3. Upload the dataset to HDFS:
+   ```bash
+   hdfs dfs -mkdir -p /user/maria_dev/IRIS
+   hdfs dfs -put iris.csv /user/maria_dev/IRIS/
+   ```
+4. Submit the job with `spark-submit`:
+   ```bash
+   spark-submit /home/maria_dev/IRIS/P166175_DM_IRIS.py
+   ```
+
+The accuracy and F1-scores produced in PuTTY matched the Jupyter Notebook results, confirming the workflow is reproducible across environments.
+
+---
