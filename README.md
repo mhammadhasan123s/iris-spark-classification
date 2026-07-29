@@ -1,61 +1,61 @@
-# Iris Classification with Apache Spark
+# Iris Classification with Spark MLlib
 
-##  Overview
-This project applies **Apache Spark MLlib** to classify species in the Iris dataset.  
-Three models were implemented — **Decision Tree**, **Random Forest**, and **Logistic Regression** — with both baseline and tuned versions.  
-The workflow was executed in **Jupyter Notebook** and reproduced in **PuTTY/HDFS** to demonstrate consistency across environments.
+A comparative study of three classification models — **Decision Tree**, **Random Forest**, and **Logistic Regression** — on the Iris dataset using **Apache Spark MLlib**, covering exploratory data analysis, baseline models, hyperparameter tuning with cross-validation, and per-model confusion matrices.
 
----
+Data Management — Assignment 1.
 
-##  Dataset and Methodology
-- **Dataset**: Iris dataset (`iris.csv`) stored in HDFS (`hdfs:///user/maria_dev/IRIS/iris.csv`)  
-- **Features**: sepal length, sepal width, petal length, petal width  
-- **Target**: species (setosa, versicolor, virginica)  
+## Overview
 
-### Preprocessing
-- `StringIndexer` → convert species names into numeric labels  
-- `VectorAssembler` → combine features into a single vector column  
+The workflow in `P166175_DM_IRIS.ipynb`:
 
-### Workflow
-1. Train/test split (80/20, fixed seed)  
-2. Train baseline models (Decision Tree, Random Forest, Logistic Regression)  
-3. Apply hyperparameter tuning with `CrossValidator` + `ParamGridBuilder` (5-fold CV)  
-4. Evaluate models using Accuracy and F1-score  
-5. Compare baseline vs tuned results  
+1. **Environment setup** — install PySpark, verify Java, initialise a single `SparkSession`.
+2. **Load data** — download `iris.csv` and read it into a Spark DataFrame.
+3. **EDA** — schema, missing-value check, class balance, and feature-by-species distributions.
+4. **Preprocessing** — `StringIndexer` for labels, `VectorAssembler` for the feature vector.
+5. **Split** — 80/20 train/test with a fixed seed.
+6. **Baseline models** — Decision Tree, Random Forest, Logistic Regression with default parameters, each with a confusion matrix.
+7. **Tuning** — `CrossValidator` + `ParamGridBuilder` (5-fold) for each model.
+8. **Comparison** — a results table and bar chart generated directly from the computed values, plus an automatically selected best model.
 
----
+## Reproducibility
 
-##  Results and Key Findings
-| **Model**             | **Baseline Accuracy** | **Baseline F1-score** | **Tuned Accuracy** | **Tuned F1-score** |
-|------------------------|-----------------------|-----------------------|--------------------|--------------------|
-| Decision Tree          | 0.92                  | 0.92                  | 0.88               | 0.88               |
-| Random Forest          | 0.96                  | 0.96                  | 0.96               | 0.96               |
-| Logistic Regression    | 1.00                  | 1.00                  | 0.92               | 0.92               |
+Every source of randomness is seeded, so *Restart & Run All* reproduces the same numbers on the same Spark version:
 
-- **Random Forest** consistently achieved ~0.96 accuracy and F1-score, making it the most robust model.  
-- Logistic Regression showed perfect baseline scores but dropped after tuning due to regularization.  
-- Decision Tree was interpretable but less stable compared to Random Forest.
+- train/test split: `randomSplit(..., seed=1)`
+- `DecisionTreeClassifier(seed=42)`, `RandomForestClassifier(seed=42)`
+- `CrossValidator(seed=42)`
 
----
+The results table and comparison chart are built from the live model outputs, so the reported numbers always match what the notebook prints.
 
-##  Running in PuTTY / HDFS
-To reproduce results in the Hadoop sandbox:
+## Results
 
-1. Upload the script `P166175_DM_IRIS.py` to `/home/maria_dev/IRIS/`.  
-2. Verify the file:
-   ```bash
-   ls /home/maria_dev/IRIS/
-   ```
-3. Upload the dataset to HDFS:
-   ```bash
-   hdfs dfs -mkdir -p /user/maria_dev/IRIS
-   hdfs dfs -put iris.csv /user/maria_dev/IRIS/
-   ```
-4. Submit the job with `spark-submit`:
-   ```bash
-   spark-submit /home/maria_dev/IRIS/P166175_DM_IRIS.py
-   ```
+> Generate this table from your own clean run (Restart & Run All) — the values below are from a reference run on Spark 4.2.0 and will be reproducible on that version; Spark 3.5.1 may differ slightly, but your notebook's table will always match your own output.
 
-The accuracy and F1-scores produced in PuTTY matched the Jupyter Notebook results, confirming the workflow is reproducible across environments.
+| Model | Baseline Accuracy | Baseline F1 | Tuned Accuracy | Tuned F1 |
+|---|---|---|---|---|
+| Logistic Regression | 1.00 | 1.00 | 0.92 | 0.92 |
+| Decision Tree | 0.92 | 0.92 | 0.88 | 0.88 |
+| Random Forest | 0.92 | 0.92 | 0.88 | 0.88 |
 
----
+**Reading the results:** *setosa* is classified perfectly by every model. All errors are *versicolor* ↔ *virginica* confusions, driven by overlapping petal measurements (visible in both the EDA plots and the confusion matrices). Tuning trades a little peak accuracy on this split for better cross-validated robustness.
+
+## Requirements
+
+- Python 3.x
+- PySpark 3.5+
+- Java 11+ (JDK)
+- pandas, matplotlib, numpy
+
+## Running
+
+```bash
+pip install pyspark pandas matplotlib numpy
+jupyter notebook P166175_DM_IRIS.ipynb
+# then: Kernel -> Restart & Run All
+```
+
+## Repository contents
+
+- `P166175_DM_IRIS.ipynb` — the analysis notebook
+- `iris.csv` — dataset (downloaded automatically by the notebook)
+- a few conceptual diagrams referenced inline (ML workflow, decision tree, random forest, cross-validation)
