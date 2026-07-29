@@ -1,6 +1,6 @@
 # Iris Classification with Spark MLlib
 
-A comparative study of three classification models — **Decision Tree**, **Random Forest**, and **Logistic Regression** — on the Iris dataset using **Apache Spark MLlib**, covering exploratory data analysis, baseline models, hyperparameter tuning with cross-validation, and per-model confusion matrices.
+A comparative study of three classification models — **Decision Tree**, **Random Forest**, and **Logistic Regression** on the Iris dataset using **Apache Spark MLlib**, covering exploratory data analysis, baseline models, hyperparameter tuning with cross-validation, and per-model confusion matrices.
 
 Data Management — Assignment 1.
 
@@ -8,14 +8,14 @@ Data Management — Assignment 1.
 
 The workflow in `P166175_DM_IRIS.ipynb`:
 
-1. **Environment setup** — install PySpark, verify Java, initialise a single `SparkSession`.
-2. **Load data** — download `iris.csv` and read it into a Spark DataFrame.
-3. **EDA** — schema, missing-value check, class balance, and feature-by-species distributions.
-4. **Preprocessing** — `StringIndexer` for labels, `VectorAssembler` for the feature vector.
-5. **Split** — 80/20 train/test with a fixed seed.
-6. **Baseline models** — Decision Tree, Random Forest, Logistic Regression with default parameters, each with a confusion matrix.
-7. **Tuning** — `CrossValidator` + `ParamGridBuilder` (5-fold) for each model.
-8. **Comparison** — a results table and bar chart generated directly from the computed values, plus an automatically selected best model.
+1. **Environment setup** install PySpark, verify Java, initialise a single `SparkSession`.
+2. **Load data** download `iris.csv` and read it into a Spark DataFrame.
+3. **EDA** schema, missing-value check, class balance, and feature-by-species distributions.
+4. **Preprocessing** `StringIndexer` for labels, `VectorAssembler` for the feature vector.
+5. **Split** 80/20 train/test with a fixed seed.
+6. **Baseline models** Decision Tree, Random Forest, Logistic Regression with default parameters, each with a confusion matrix.
+7. **Tuning** `CrossValidator` + `ParamGridBuilder` (5-fold) for each model.
+8. **Comparison** a results table and bar chart generated directly from the computed values, plus an automatically selected best model.
 
 ## Reproducibility
 
@@ -41,7 +41,7 @@ These values are produced directly by the notebook and have been verified to rep
 
 **Reading the results**
 
-- *Setosa* is classified perfectly by every model — it is linearly separable, as the EDA shows.
+- *Setosa* is classified perfectly by every model it is linearly separable, as the EDA shows.
 - All errors are *versicolor* ↔ *virginica* confusions, driven by overlapping petal measurements. This is visible in both the EDA distributions and the confusion matrices.
 - Tuning lowers the score on this particular test split for all three models. Cross-validation optimises for average performance across folds rather than for one split, so the tuned models are the more robust choice even though their single-split numbers are lower.
 - **Caveat on the margins:** the test set contains only 26 samples, so 0.9231 = 24/26 correct and 0.8846 = 23/26. The gap between the best and worst tuned model is a single sample. These differences are within noise and should not be read as a strong ranking of the algorithms; the confusion matrices are more informative than the headline accuracy.
@@ -63,6 +63,6 @@ jupyter notebook P166175_DM_IRIS.ipynb
 
 ## Repository contents
 
-- `P166175_DM_IRIS.ipynb` — the analysis notebook
-- `iris.csv` — dataset (downloaded automatically by the notebook)
+- `P166175_DM_IRIS.ipynb` the analysis notebook
+- `iris.csv` dataset (downloaded automatically by the notebook)
 - a few conceptual diagrams referenced inline (ML workflow, decision tree, random forest, cross-validation)
